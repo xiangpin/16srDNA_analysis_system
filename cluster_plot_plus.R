@@ -47,7 +47,7 @@ sample <- ddata$labels$label
 samplecolors <- vector()
 for (i in 1:length(sample)){
 	tmp <- as.character(sample[i])
-	grouptmp <- as.character(groupTable[groupTable[,1]==tmp, 2][1])
+	grouptmp <- as.character(groupTable[groupTable[,1]==tmp, 2])
 	samplecolors[i] <- as.character(group2colors[group2colors[,1]==grouptmp, 2][1])
 	b <- da[[tmp]]
 	c <- data.frame(cbind(c,b))
