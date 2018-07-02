@@ -86,7 +86,7 @@ stat="identity")+
 #, fun.y = "mean") + #, stat="identity") +
 #scale_x_discrete("group", labels = as.vector(groupTable$group)) +
 theme_bw() +
-theme(axis.text.x = element_text(angle = 45, hjust = 1, size=6), 
+theme(axis.text.x = element_text(angle = 45, hjust = 1, size=8), 
 #axis.text.x = element_blank(),
 panel.grid = element_blank(), 
 panel.border = element_blank(),

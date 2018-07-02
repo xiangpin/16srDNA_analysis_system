@@ -18,7 +18,6 @@ output <- args$output
 
 da <- read.table(otutab, skip=1, sep="\t", header=T, row.names=1, check.names=F, comment.char="")
 dt <- read.table(edgesfile, header=T, sep="\t")
-head(da, 3)
 tax <- as.vector(da$taxonomy)
 species <- vector()
 phylum <- vector()
@@ -47,11 +46,12 @@ da <- data.frame(cbind(species, da), check.names=F)
 da <- data.frame(ddply(da, "species", numcolwise(sum)), check.names=F)
 rownames(da) <- da$species
 da$species <- NULL
-da <- data.frame(prop.table(as.matrix(da), 2), check.names=F)
-da <- da*100
+#da <- data.frame(prop.table(as.matrix(da), 2), check.names=F)
+#da <- da*100
 da$mean <- apply(da, 1, mean)
 head(da, 3)
-nodelist <- unique(c(unique(as.vector(dt[,1])), unique(as.vector(dt[,2]))))
+nodelist <- as.vector(unique(c(unique(as.vector(dt[,1])), unique(as.vector(dt[,2])))))
+print(da[rownames(da)%in%nodelist,])
 dt <- da[rownames(da)%in%nodelist, "mean", drop=F]
 dt <- merge(newtaxdat, dt, by=0)
 dt$Row.names <- NULL

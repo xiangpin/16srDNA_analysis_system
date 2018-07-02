@@ -19,7 +19,6 @@ outfile <- args$output
 summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
                       conf.interval=.95, .drop=TRUE) {
     library(plyr)
-
     # New version of length which can handle NA's: if na.rm==T, don't count them
     length2 <- function (x, na.rm=FALSE) {
         if (na.rm) sum(!is.na(x))
@@ -37,10 +36,8 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
       },
       measurevar
     )
-
     # Rename the "mean" column    
     datac <- rename(datac, c("mean" = measurevar))
-
     datac$se <- datac$sd / sqrt(datac$N)  # Calculate standard error of the mean
 
     # Confidence interval multiplier for standard error
@@ -67,7 +64,7 @@ rownames(dat) <- dat$Row.names
 dat$Row.names <- NULL
 colnames(dat)[length(colnames(dat))] <- "group"
 data <- melt(dat, id="group")
-data_se <- summarySE(data, measurevar="value", groupvars=c("variable", "group"))
+data_sd <- summarySE(data, measurevar="value", groupvars=c("variable", "group"))
 tmpgroup <- as.vector(dat$group)
 
 dat <- data.frame(t(dat),check.names=F)
@@ -84,9 +81,9 @@ tmpdata <- round_df(tmpdata, 4)
 datt$p.value <- NULL
 datt$F.value <- NULL
 datt$FDR <- NULL
-data_se <- round_df(data_se,2)
-data_se <- within(data_se, value<-paste(value, sd, sep="±"))
-data <- dcast(data_se, variable~group, value.var = "value")
+data_sd <- round_df(data_sd,2)
+data_sd <- within(data_sd, value<-paste(value, sd, sep="±"))
+data <- dcast(data_sd, variable~group, value.var = "value")
 rownames(data) <- data$variable
 data$variable <- NULL
 newdata <- merge(data, tmpdata, by=0)

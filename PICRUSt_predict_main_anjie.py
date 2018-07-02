@@ -92,8 +92,8 @@ def PICRUSt_visualization(workpath, groups, subanalysis):
 	tmpsamp = workpath+"/Tmpgroups/group_"+tmpvs+"/subsample_"+tmpvs+".txt"
 	koimage = workpath+"/08_Function_predict/group_"+tmpvs+"/kegg_bar_"+tmpvs+".svg"
 	cogimage = workpath+"/08_Function_predict/group_"+tmpvs+"/cog_bar_"+tmpvs+".svg"
-	annovatabcog = workpath+"/08_Function_predict/group_"+tmpvs+"/ANNOVAtab_cog_"+tmpvs+".svg"
-	annovatabkegg = workpath+"/08_Function_predict/group_"+tmpvs+"/ANNOVAtab_kegg_"+tmpvs+".svg"
+	annovatabcog = workpath+"/08_Function_predict/group_"+tmpvs+"/ANOVAtab_cog_"+tmpvs+".xls"
+	annovatabkegg = workpath+"/08_Function_predict/group_"+tmpvs+"/ANOVAtab_kegg_"+tmpvs+".xls"
 	if os.path.exists(fileCOGTXT) and not os.path.exists(koimage):
 		tmpsh = workpath+"/Tmpgroups/group_"+tmpvs+"/08_PICRUSt_plot_"+tmpvs+".sh"
 		with open(tmpsh, "w") as shfile:

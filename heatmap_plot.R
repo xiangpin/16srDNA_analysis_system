@@ -15,12 +15,12 @@ parser <- ArgumentParser(description=docstring, formatter_class="argparse.RawTex
 	parser$add_argument("-o", "--output", default="heatmap_plot.svg", help="the Heatmap plot, default is heatmap_plot.svg.")
 	args <- parser$parse_args()
 library(ggplot2)
-library(pheatmap)
-library(dplyr)
-library(recommenderlab)
-library(Heatplus)
+suppressPackageStartupMessages(library(pheatmap))
+suppressPackageStartupMessages(library(dplyr))
+#library(recommenderlab)
+#library(Heatplus)
 library(RColorBrewer)
-library(gplots)
+#library(gplots)
 dataFile <- args$data
 groupFile <- args$sample
 top <- as.integer(args$top)
@@ -35,10 +35,17 @@ colors <- c("blue","white","red")
 a <- read.table(dataFile, header=T, sep = '\t', row.names=1, check.names=F)
 tmpspecies <- row.names(a)
 grouptable <- read.table(groupFile, header=T, row.names=1, sep="\t", check.names=F, comment.char="")
-groupTable <- data.frame(grouptable$group)
-rownames(groupTable) <- rownames(grouptable)
-colnames(groupTable) <- "group"
+da <- data.frame(t(a), check.names=F)
+dat <- merge(grouptable, da, by=0)
+rownames(dat) <- dat$Row.names
+dat[[colnames(grouptable)]] <- NULL
+dat$Row.names <- NULL
+dat <- data.frame(t(dat), check.names=F)
+groupTable <- data.frame(grouptable[,1,drop=F])
+#rownames(groupTable) <- rownames(grouptable)
+#colnames(groupTable) <- "group"
 groupnum <- nrow(data.frame(table(groupTable[,1])))
+
 
 sample <- vector()
 sample<- rownames(groupTable)#$sample
@@ -48,11 +55,15 @@ for (i in 1:length(sample)){
         c<- data.frame(cbind(c,b))
 }
 a<-c[,2:ncol(c)]
+
 a <- data.frame(matrix(as.numeric(as.matrix(a[1:nrow(a),1:ncol(a)])), ncol=ncol(a)))
 colnames(a) <- sample
 rownames(a) <- tmpspecies
 a <- a[rowSums(a)>0, ]
+#a <- dat[rowSums(dat)>0, ]
+head(a, 4)
 a$sum <- apply(a, 1, sum)
+head(a)
 if (total == "T"){
 	d<-a[rev(order(a$sum)),][1:length(a$sum),]
 	}else{
@@ -67,7 +78,7 @@ if (total == "T"){
 anno_color <- c('#00AED7', '#FD9347', '#C1E168', '#319F8C',"#FF4040", "#228B22", "#FFFF33", "#0000FF", "#984EA3", "#FF7F00", "#A65628", "#F781BF", "#999999", "#458B74", "#A52A2A", "#8470FF", "#53868B", "#8B4513", "#6495ED", "#8B6508", "#556B2F", "#CD5B45", "#483D8B", "#EEC591", "#8B0A50", "#696969", "#8B6914", "#008B00", "#8B3A62", "#20B2AA", "#8B636C", "#473C8B", "#36648B", "#9ACD32")
 group <- anno_color[1:groupnum]
 names(group) <- levels(groupTable[,1])
-
+print(group)
 ann_colors = list(group = group)
 d<-d[colnames(d)!="sum"]
 d <- data.frame(d, check.names=F)

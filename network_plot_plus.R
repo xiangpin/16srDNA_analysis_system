@@ -8,7 +8,7 @@ myparser$add_argument("-d", "--degree", default="network_degree_file.txt", help=
 myparser$add_argument("-l", "--linestyle", default="curve", help="the style of network line, default is curve, you can chose curve or segment")
 myparser$add_argument("-s", "--style", default=1, help="the style of network figure, default is 1, you can chose the 1 to 14")
 myparser$add_argument("-g", "--gml", default="network_file_plot.gml", help="the gml file of igraph output, default is network_file_plot.gml.")
-myparser$add_argument("-w", "--width", default=7, help="the width of output figures, default is 7.")
+myparser$add_argument("-w", "--width", default=9, help="the width of output figures, default is 9.")
 myparser$add_argument("-H", "--height", default=5, help="the height of output figures, default is 5.")
 myparser$add_argument("-o", "--figure", default="network_figure_plot.svg", help="the output figures, default is network_figure_plot.svg.")
 
@@ -17,7 +17,7 @@ suppressPackageStartupMessages(library(igraph))
 library(ggplot2)
 library(RColorBrewer)
 library(ggrepel)
-set.seed(1000)
+set.seed(500)
 nodes <- args$nodestab
 link <- args$edgestab
 degreefile <- args$degree
@@ -44,7 +44,6 @@ netdeg <- merge(netdeg, tmpnodes, by=0)
 netdeg$Row.names <- NULL
 write.table(netdeg, degreefile, sep="\t", row.names=F, col.names=T, quote=F)
 write.graph(g, gmlfile, format="gml")
-
 if (style == 1){
 	plotcord <- data.frame(layout.fruchterman.reingold(g))
 }
@@ -105,38 +104,46 @@ plotcord <- merge(plotcord, nodes, by=0)
 if (linestyle == "curve"){
 	p <- ggplot()+
 		geom_curve(aes(x=X1, y=Y1, xend = X2, yend =Y2, color=Flagcor, alpha=abs(corr)),
-			data=edges, show.legend=c(color=T, alpha=T))
+			size=0.6,
+			data=edges)
 }
 if (linestyle == "segment"){
 	p <- ggplot()+
 		geom_segment(aes(x=X1, y=Y1, xend = X2, yend =Y2, color=Flagcor, alpha=abs(corr)),
-			data=edges, show.legend=c(color=T, alpha=T))
+			size=0.6,
+			data=edges)
 }
 p <- p +
-geom_point(aes(X1, X2, fill=type, size=mean, shape=type), 
-	stroke=0.2,
-	color="grey60", 
-	data=plotcord, 
-	show.legend=c(fill=T, size=T, shape=FALSE))+
+geom_point(data=plotcord, 
+	aes(X1, X2, size=mean, shape=Kindom, fill=Phylum), 	
+	color = "grey60",
+	stroke = 0.8
+	)+
 geom_text_repel(data=plotcord, 
 	aes(X1, X2, label=Feature), 
 	family = "SimSun",
 	fontface="bold",
-	size=2, 
-	segment.size = 0,		
+	size=2,
+	segment.size = 0,
 	show.legend=F)+
 scale_fill_manual(values=mycolors)+
-scale_shape_manual(values=c(21, 22, 23, 24, 25))+
+#scale_fill_brewer(palette=mycolors)+
+scale_shape_manual(values=c(21, 22, 24, 23, 25))+
 theme_bw()+
-labs(color="correlation type", alpha="correlation size", fill="Phylum", size="abundance")+
-guides(fill = guide_legend(override.aes = list(linetype = 0, shape=21), order=3),
-	size = guide_legend(override.aes = list(linetype = 0), order=4),
-	alpha = guide_legend(override.aes = list(stroke = 0, shape=0), order=1),
-	color = guide_legend(override.aes = list(stroke = 0, shape=0), order=2),
-	shape = FALSE)+
+labs(alpha="correlation size",
+	color = "correlation type", 
+	size="Abundance"
+	#fill="Phylum"
+	)+
+guides(fill = guide_legend(override.aes = list(shape=21), order=3),
+        size = guide_legend(override.aes = list(linetype = 0), order=4),
+        alpha = guide_legend(override.aes = list(stroke = 0, shape=0), order=1),
+	shape = guide_legend(order=5),
+        color = guide_legend(override.aes = list(stroke = 0, shape=0, fill=0), order=2))+
+
 theme(
 	legend.text = element_text(size=7),
-	legend.title = element_text(size=7),
+        legend.title = element_text(size=7),
 	plot.background = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
@@ -149,6 +156,9 @@ theme(
 	legend.key.height=unit(0.3,"line"),
         axis.ticks = element_blank()
               )
+#guides(fill = guide_legend(override.aes =list(size=2)))
+
+
 svg(figurefile, width=wd, height=hd)
 p
 dev.off()

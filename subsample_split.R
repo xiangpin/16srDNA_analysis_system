@@ -16,6 +16,7 @@ groupids <- unlist(strsplit(gr, "[,]")[1])
 sampleda <- read.table(input, header=T, sep="\t", comment.char="", check.names=F)
 head(sampleda)
 dd <- data.frame()
+print (groupids)
 for (i in 1:length(groupids)){
 	tmp <- sampleda[sampleda[,2]==groupids[i],]
 	#print(sampleda)
@@ -23,7 +24,7 @@ for (i in 1:length(groupids)){
 
 }
 #head(dd)
-if (length(groupids) == 1){
+if (ncol(sampleda) == 3){
 	dd[,2]<-NULL
 }else{
 	dd[,3] <- NULL

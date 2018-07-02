@@ -77,10 +77,10 @@ c <- data.frame()
 for (i in 1:length(sample)){
 	tmp <- as.character(sample[i])
 	b <- da[[tmp]]
-	if (i == 1){
-		c <- data.frame(b, check.names=F)
-	}
-		c <- data.frame(cbind(c,b), check.names=F)
+	#if (i == 1){
+	#	c <- data.frame(b, check.names=F)
+	#}
+	c <- data.frame(cbind(c,b), check.names=F)
 }
 a <- c[,2:ncol(c)]
 a <- data.frame(matrix(as.numeric(as.matrix(a[1:nrow(a),1:ncol(a)])), ncol=ncol(a)))

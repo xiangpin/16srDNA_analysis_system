@@ -22,20 +22,31 @@ rownames(lefseres) <- str_replace_all(rownames(lefseres), "JG30_KF_CM45", "JG30-
 rownames(lefseres) <- str_replace_all(rownames(lefseres), "TM7_3", "TM7-3")
 rownames(lefseres) <- str_replace_all(rownames(lefseres), "Rs_045", "Rs-045")
 lefseinput <- read.table(input2, header=T, row.names=1, sep="\t", check.names=F)
-groups <- unique(colnames(lefseinput))
+#groups <- unique(colnames(lefseinput))
+#tmplefse <- lefseinput[-1, ]
+names <- as.vector(as.matrix(lefseinput[1,]))
+groups <- unique(as.vector(as.matrix(lefseinput[1,])))
+lefseinput <- lefseinput[-1, ]
+tmplefse <- data.frame(matrix(as.numeric(as.matrix(lefseinput[1:nrow(lefseinput), 1:ncol(lefseinput)])), ncol=ncol(lefseinput)))
+rownames(tmplefse) <- rownames(lefseinput)
+colnames(tmplefse) <- colnames(lefseinput) 
+lefseinput <- tmplefse
+names(lefseinput) <- names
+print(groups)
 da <- data.frame()
 for (i in 1:length(groups)){
 	tmp <- lefseres[lefseres$V3==groups[i],]
 	da <- rbind(da, tmp)
 }
 da$V2 <- NULL
-
 colnames(da) <- c("Sign_Group", "LDA" ,"FDR")
+head(da, 3)
 keeptax <- rownames(da)
-dat <- lefseinput[rownames(lefseinput)%in%keeptax, ]
-Totalmean <- apply(dat, 1, mean)
-datt <- cbind(Totalmean, dat)
-
+dat <- lefseinput[rownames(lefseinput)%in%keeptax, , drop=F]
+dattmp <- data.frame(tmplefse[rownames(tmplefse)%in%keeptax, , drop=F])
+Totalmean <- apply(dattmp, 1, mean)
+datt <- cbind(Totalmean, dattmp)
+head(dat,4)
 dtmean <- sapply(split.default(dat, names(dat)), rowMeans)
 head(dtmean)
 colnames(dtmean) <- sapply(colnames(dtmean), paste, "mean", sep="_")

@@ -79,7 +79,7 @@ def quality_check(workpath, quality_out, readslist, fqrun):
 				if fqrun == "Yes":
 					os.system("sh "+workpath+"/Shellscript/00_raw_reads.sh")
 	if raw_clean == "clean":
-		if not os.path.exists(workpath+"/01_clean_reads/fastqc_out"):
+		if not os.path.exists(workpath+"/01_clean_reads/fastqc_out_run.log"):
 			with open(workpath+"/Shellscript/02_clean_reads.sh" , "w") as shfile:
 				shfile.write("#!/usr/bin/sh\ncd "+workpath+"/01_clean_reads\n" + fqtmp+"\ntouch fastqc_out_run.log")
 				shfile.close()
@@ -165,10 +165,10 @@ def OTUtabBuild(workpath, Kindom):
 		cmdtmpstr = "\n".join(cmdtmplist)
 		with open(workpath+"/Shellscript/05_OTUtab_Build.sh", "w") as shfile:			
 			if Kindom == "Bacteria" or Kindom == "bacteria" or Kindom=="":
-				shfile.write("#!/usr/bin/sh\ncd " + workpath + "/05_OTU_table_build\notu2reads.py "+workpath+"/03_pick_OTU/reads_map.uc\ncp "+workpath+"/04_OTU_assignment/otus_assign/otus_tax_assignments.txt .\nmake_otu_table.py -i otu2seqs.tab -t otus_tax_assignments.txt -o otu_tax_table.biom\nbiom convert -i otu_tax_table.biom -o otu_tax_table.txt --to-tsv --header-key=taxonomy\nqiime_close_otutax.py otu_tax_table.txt\ngrep -v 'k__Unassigned;' otu_tax_table.tab > otu_tax_table.txt\nrm otu_tax_table.biom\ntxt2biom.py otu_tax_table.txt otu_tax_table.biom\nnormalize_table.py -i otu_tax_table.biom -o otu_tax_table_norm.biom -a CSS\nbiom convert -i otu_tax_table_norm.biom -o otu_tax_table_norm.txt --to-tsv --header-key=taxonomy\nextract_seq.py "+workpath+"/03_pick_OTU/otus.fa otu_tax_table.txt > ../03_pick_OTU/rep_seq.fa\ntouch 05_OTU_tab.log\n"+cmdtmpstr+"\ncd "+workpath+"/03_pick_OTU/\nalign_seqs.py -m muscle -i rep_seq.fa -o ./\nmake_phylogeny.py -i rep_seq_aligned.fasta -o rep_seq_phylo.tre")
+				shfile.write("#!/usr/bin/sh\ncd " + workpath + "/05_OTU_table_build\notu2reads.py "+workpath+"/03_pick_OTU/reads_map.uc\ncp "+workpath+"/04_OTU_assignment/otus_assign/otus_tax_assignments.txt .\nmake_otu_table.py -i otu2seqs.tab -t otus_tax_assignments.txt -o otu_tax_table.biom\nbiom convert -i otu_tax_table.biom -o otu_tax_table.txt --to-tsv --header-key=taxonomy\nqiime_close_otutax.py otu_tax_table.txt\ngrep -v 'k__Unassigned;' otu_tax_table.tab > otu_tax_table.txt\nrare_otu_count.R otu_tax_table.txt -o otu_tax_table.tab\nmv otu_tax_table.tab otu_tax_table.txt\nrm otu_tax_table.biom\ntxt2biom.py otu_tax_table.txt otu_tax_table.biom\nrare_norm.R otu_tax_table.txt -o otu_tax_table_norm.txt \ntxt2biom.py otu_tax_table_norm.txt otu_tax_table_norm.biom\nextract_seq.py "+workpath+"/03_pick_OTU/otus.fa otu_tax_table.txt > ../03_pick_OTU/rep_seq.fa\ntouch 05_OTU_tab.log\n"+cmdtmpstr+"\ncd "+workpath+"/03_pick_OTU/\nalign_seqs.py -m muscle -i rep_seq.fa -o ./\nmake_phylogeny.py -i rep_seq_aligned.fasta -o rep_seq_phylo.tre")
 				shfile.close()
 			elif Kindom == "Archaea" or Kindom == "archaea":
-				shfile.write("#!/usr/bin/sh\ncd " + workpath + "/05_OTU_table_build\notu2reads.py "+workpath+"/03_pick_OTU/reads_map.uc\ncp "+workpath+"/04_OTU_assignment/otus_assign/otus_tax_assignments.txt .\nmake_otu_table.py -i otu2seqs.tab -t otus_tax_assignments.txt -o otu_tax_table.biom\nbiom convert -i otu_tax_table.biom -o otu_tax_table.txt --to-tsv --header-key=taxonomy\nqiime_close_otutax.py otu_tax_table.txt\ngrep -v 'k__Unassigned;' otu_tax_table.tab | grep -v 'k__Bacteria;' > otu_tax_table.txt\nrm otu_tax_table.biom\ntxt2biom.py otu_tax_table.txt otu_tax_table.biom\nnormalize_table.py -i otu_tax_table.biom -o otu_tax_table_norm.biom -a CSS\nbiom convert -i otu_tax_table_norm.biom -o otu_tax_table_norm.txt --to-tsv --header-key=taxonomy\ntouch 05_OTU_tab.log\n"+cmdtmpstr+"\nArchaea_assemble_stastic.R "+workpath+"/02_assemble/Raw_Nums.txt "+workpath+"/02_assemble/Clean_Nums.txt "+workpath+"/03_pick_OTU/otus_table1.txt "+workpath+"/03_pick_OTU/otus_table.txt otu_tax_table.txt\nmv Statistic_RawCleanNums.xls "+workpath+"/03_pick_OTU/\nextract_seq.py "+workpath+"/03_pick_OTU/otus.fa otu_tax_table.txt > ../03_pick_OTU/rep_seq.fa\ntouch 05_OTU_tab.log\n"+cmdtmpstr+"\ncd "+workpath+"/03_pick_OTU/\nalign_seqs.py -m muscle -i rep_seq.fa -o ./\nmake_phylogeny.py -i rep_seq_aligned.fasta -o rep_seq_phylo.tre")
+				shfile.write("#!/usr/bin/sh\ncd " + workpath + "/05_OTU_table_build\notu2reads.py "+workpath+"/03_pick_OTU/reads_map.uc\ncp "+workpath+"/04_OTU_assignment/otus_assign/otus_tax_assignments.txt .\nmake_otu_table.py -i otu2seqs.tab -t otus_tax_assignments.txt -o otu_tax_table.biom\nbiom convert -i otu_tax_table.biom -o otu_tax_table.txt --to-tsv --header-key=taxonomy\nqiime_close_otutax.py otu_tax_table.txt\ngrep -v 'k__Unassigned;' otu_tax_table.tab | grep -v 'k__Bacteria;' > otu_tax_table.txt\nrm otu_tax_table.biom\ntxt2biom.py otu_tax_table.txt otu_tax_table.biom\n"+cmdtmpstr+"\nArchaea_assemble_stastic.R "+workpath+"/02_assemble/Raw_Nums.txt "+workpath+"/02_assemble/Clean_Nums.txt "+workpath+"/03_pick_OTU/otus_table1.txt "+workpath+"/03_pick_OTU/otus_table.txt otu_tax_table.txt\nmv Statistic_RawCleanNums.xls "+workpath+"/03_pick_OTU/\nrare_otu_count.R otu_tax_table.txt -o otu_tax_table.tab\nmv otu_tax_table.tab otu_tax_table.txt\nrare_norm.R otu_tax_table.txt -o otu_tax_table_norm.txt\ntxt2biom.py otu_tax_table_norm.txt otu_tax_table_norm.biom\nextract_seq.py "+workpath+"/03_pick_OTU/otus.fa otu_tax_table.txt > ../03_pick_OTU/rep_seq.fa\ntouch 05_OTU_tab.log\n"+cmdtmpstr+"\ncd "+workpath+"/03_pick_OTU/\nalign_seqs.py -m muscle -i rep_seq.fa -o ./\nmake_phylogeny.py -i rep_seq_aligned.fasta -o rep_seq_phylo.tre")
 				shfile.close()
 			os.system("sh "+workpath+"/Shellscript/05_OTUtab_Build.sh")
 
@@ -213,7 +213,7 @@ def splitOTUtab(workpath, groups, subanalysis):
 	if os.path.exists("05_OTU_table_build/otu_tax_table.biom") and not os.path.exists(flagfile):
 		tmpsh = workpath+"/Tmpgroups/group_"+tmpvs+"/split_tab"+tmpvs+".sh"
 		with open(tmpsh, "w") as shfile:
-			shfile.write("#!/usr/bin/sh\nfilter_samples_from_otu_table.py -i "+workpath+"/05_OTU_table_build/otu_tax_table.biom -o "+flagfile+" --sample_id_fp "+tmpsamp+"\nnormalize_table.py -a CSS -i "+flagfile+" -o "+flagfilenorm+"\nbiom convert -i "+flagfilenorm+" -o "+filetxtnorm+" --header-key=taxonomy --to-tsv\nbiom convert -i "+flagfile+" -o "+filetxt+" --header-key=taxonomy --to-tsv")
+			shfile.write("#!/usr/bin/sh\nfilter_samples_from_otu_table.py -i "+workpath+"/05_OTU_table_build/otu_tax_table.biom -o "+flagfile+" --sample_id_fp "+tmpsamp+"\nbiom convert -i "+flagfile+" -o "+filetxt+" --header-key=taxonomy --to-tsv\nrare_norm.R "+filetxt+" -o "+filetxtnorm+"\ntxt2biom.py "+filetxtnorm+" "+flagfilenorm)
 			shfile.close()
 			if subanalysis == "Yes":
 				os.system("sh "+tmpsh)
@@ -227,7 +227,7 @@ def Vennplot(workpath, groups, subanalysis):
 	filetxtnorm = workpath+"/07_groups/group_"+tmpvs+"/"+subtxtnorm
 	outimage = workpath+"/07_groups/group_"+tmpvs+"/"+Vennimage
 	Anosim = workpath+"/07_groups/group_"+tmpvs+"/08_Anosim_analysis/"+ Anoimage
-	if os.path.exists(filetxtnorm) and not os.path.exists(outimage):
+	if os.path.exists(filetxtnorm) and not os.path.exists(Anosim):
 		tmpsh = workpath+"/Tmpgroups/group_"+tmpvs+"/08_Anosim_Venn"+tmpvs+".sh"
 		with open(tmpsh, "w") as shfile:
 			shfile.write("#!/usr/bin/sh\nvenn_plot_plus.R "+filetxtnorm+" "+tmpsam+" -o "+outimage+"\nAnosim_plot.R "+filetxtnorm+" "+tmpsam+" -o "+Anosim)
@@ -343,6 +343,7 @@ def LEfSe_DOTU(workpath, groups, subanalysis):
 	outpath = workpath+"/07_groups/group_"+tmpvs+"/12_LEfSe_analysis/"
 	tmppath = workpath+"/Tmpgroups/group_"+tmpvs+"/"
 	LEfSe_input = outpath+"LEfSe_input_"+tmpvs+".txt"
+	LEfSe_tmp_input = outpath+"LEfSe_tmp_input_"+tmpvs+".txt"
 	LEfSe_input_format = tmppath+"LEfSe_input_"+tmpvs+"_format.txt"
 	LEfSe_formatres = tmppath+"LEfSe_input_"+tmpvs+"_format.txt.res"
 	LEfSe_DEtaxtab = outpath+"DEtax_LEfSe_tab"+tmpvs+".xls"
@@ -352,7 +353,7 @@ def LEfSe_DOTU(workpath, groups, subanalysis):
 	if os.path.exists(flagfilenorm) and not os.path.exists(LEfSe_caladogram):
 		tmpsh = workpath+"/Tmpgroups/group_"+tmpvs+"/12_LEfSe_analysis_"+tmpvs+".sh"
 		with open(tmpsh, 'w') as shfile:
-			shfile.write("#!/usr/bin/sh\nbiom2metaphlan.py -l -m "+tmpsam+" -i "+flagfilenorm+" -g group -o "+LEfSe_input+"\nformat_input.py "+LEfSe_input+" "+LEfSe_input_format+" -c 1 -o 1000000\nrun_lefse.py "+LEfSe_input_format+" "+LEfSe_formatres+"\nLDA_cicular_plot.R "+LEfSe_formatres+" "+tmpsam+" -o "+LEfSe_LDA+"\nplot_cladogram.py "+LEfSe_formatres+" "+LEfSe_caladogram+" --format svg --dpi 400 --left_space_prop 0.15 --right_space_prop 0.3\nmkdir -p "+biomaker+"\nplot_features.py "+LEfSe_input_format+" "+LEfSe_formatres+" "+biomaker+"/ --title_font_size 10 --dpi 300\nLEfSe_DEtax_tab.R "+LEfSe_formatres+" "+LEfSe_input+" -o "+LEfSe_DEtaxtab)
+			shfile.write("#!/usr/bin/sh\nQiimeToLEfSe.R "+flagfilenorm+" "+tmpsam+" -d "+LEfSe_tmp_input+" -o "+LEfSe_input+"\nformat_input.py "+LEfSe_input+" "+LEfSe_input_format+" -c 1 -o 1000000\nrun_lefse.py "+LEfSe_input_format+" "+LEfSe_formatres+"\nLDA_cicular_plot.R "+LEfSe_formatres+" "+tmpsam+" -o "+LEfSe_LDA+"\nplot_cladogram.py "+LEfSe_formatres+" "+LEfSe_caladogram+" --format svg --dpi 400 --left_space_prop 0.15 --right_space_prop 0.3\nmkdir -p "+biomaker+"\nplot_features.py "+LEfSe_input_format+" "+LEfSe_formatres+" "+biomaker+"/ --title_font_size 10 --dpi 300\nLEfSe_DEtax_tab.R "+LEfSe_formatres+" "+LEfSe_tmp_input+" -o "+LEfSe_DEtaxtab+"\ncd "+biomaker+"\ni=1;for file in `ls *.png`;do mv $file 'LEfSe_DET_Figure'$i'.png';i=$[$i+1];done")
 			shfile.close()
 			if subanalysis == "Yes":
 				os.system("sh "+tmpsh)
@@ -390,10 +391,33 @@ def myspeciestree(workpath, groups, subanalysis):
 	if os.path.exists(flagfilenorm) and not os.path.exists(treeoutimage):
 		tmpsh = workpath+"/Tmpgroups/group_"+tmpvs+"/14_Tree_plot_"+tmpvs+".sh"
 		with open(tmpsh, 'w') as shfile:
-			shfile.write("#!/usr/bin/sh\nbiom2metaphlan.py -l -m "+tmpsam+" -i "+flagfilenorm+" -g group -o "+inputfile+"\npick_known_tax_to_tree.py "+inputfile+" g > "+tmpfile+"\nmetaphlan2graphlan.py "+tmpfile+" --tree_file "+treefile+" --annot_file "+tmpannot+"\ngenerate_annotaion_for_species_tree.py "+tmpfile+" > "+annotfile+"\ngraphlan_annotate.py "+treefile+" "+xmlannot+" --annot "+annotfile+"\ngraphlan.py "+xmlannot+" "+treeoutimage+" --size 16")
+			shfile.write("#!/usr/bin/sh\nQiimeToLEfSe.R "+flagfilenorm+" "+tmpsam+" -o "+inputfile+"\npick_known_tax_to_tree.py "+inputfile+" g > "+tmpfile+"\nmetaphlan2graphlan.py "+tmpfile+" --tree_file "+treefile+" --annot_file "+tmpannot+"\ngenerate_annotaion_for_species_tree.py "+tmpfile+" > "+annotfile+"\ngraphlan_annotate.py "+treefile+" "+xmlannot+" --annot "+annotfile+"\ngraphlan.py "+xmlannot+" "+treeoutimage+" --size 16")
 			shfile.close()
 			if subanalysis == "Yes":
 				os.system("sh "+tmpsh)
+
+def PDFbuildtotal(workpath):
+	#tmpvs = "_vs_".join(groups.split(","))
+	pickegglog = workpath+"/08_Function_predict/08_pick_close_OTU.log"
+	pdfdonelog = workpath+"/09PDFbuild/09PDFdone1.log"
+	if os.path.exists(pickegglog) and not os.path.exists(pdfdonelog):
+		tmpsh = workpath+"/Shellscript/09PDFbuild01.sh"	
+		with open(tmpsh, "w") as shfile:
+			shfile.write("#!/usr/bin/sh\nPDF_build_16S.sh\ntouch 09PDFbuild/09PDFdone1.log")
+			shfile.close()
+			os.system("sh "+tmpsh)
+
+def PDFbuildgroup(workpath, groups):
+	tmpvs = "_vs_".join(groups.split(","))
+	pickegglog = workpath+"/08_Function_predict/08_pick_close_OTU.log"
+	pdfdone2log = workpath+"/09PDFbuild/09PDFdone2.log"
+	if os.path.exists(pickegglog):#and not os.path.exists(pdfdone2log):
+		tmpsh = workpath+"/Shellscript/09PDFbuild02.sh"
+		with open(tmpsh, "w") as shfile:
+			shfile.write("#!/usr/bin/sh\nselect_group_floder_16S.sh "+tmpvs)
+			shfile.close()
+			os.system("sh "+tmpsh)		
+
 
 if __name__ == "__main__":
 	params = readparas(sys.argv)
@@ -465,6 +489,7 @@ if __name__ == "__main__":
 	taxannotation(workpath, taxonomy, tax_fasta, projecttype, rdpmemory)
 	OTUtabBuild(workpath, Kindom)
 	rare_analysis(workpath, sample_qiime)
+	PDFbuildtotal(workpath)
 	if len(groups.split(";")[0]) != 0:
 		groupslist = groups.split(";")
 		for i in xrange(len(groupslist)):
@@ -478,6 +503,7 @@ if __name__ == "__main__":
 			cluster_analysis(workpath, groupslist[i], subanalysis, cl_label_size, clbar_tree_height, blank_width, clbar_labelsize)
 			LEfSe_DOTU(workpath, groupslist[i], subanalysis)
 			myspeciestree(workpath, groupslist[i], subanalysis)
+			PDFbuildgroup(workpath, groupslist[i])
 			if len(environment) != 0:
 				EnvironRDA(workpath, groupslist[i])
 	if len(subgroups.split(";")[0]) != 0:
@@ -493,3 +519,4 @@ if __name__ == "__main__":
 			cluster_analysis(workpath, subgroupslist[i], subanalysis, cl_label_size, clbar_tree_height, blank_width, clbar_labelsize)
 			LEfSe_DOTU(workpath, subgroupslist[i], subanalysis)
 			myspeciestree(workpath, subgroupslist[i], subanalysis)
+			PDFbuildgroup(workpath, subgroupslist[i])

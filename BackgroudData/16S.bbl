@@ -1,0 +1,53 @@
+\begin{thebibliography}{1}
+
+\bibitem{Mago2011FLASH}
+Tanja Magoč and Steven~L. Salzberg.
+\newblock Flash: fast length adjustment of short reads to improve genome
+  assemblies.
+\newblock {\em Bioinformatics}, 27(21):2957--2963, 2011.
+
+\bibitem{Caporaso2010QIIME}
+J.~G. Caporaso, J~Kuczynski, J~Stombaugh, K~Bittinger, F.~D. Bushman, E.~K.
+  Costello, N~Fierer, A.~G. Peña, J.~K. Goodrich, and J.~I. Gordon.
+\newblock {QIIME} allows analysis of high-throughput community sequencing data.
+\newblock {\em Nature Methods}, 7(5):335, 2010.
+
+\bibitem{Mcmurdie2013phyloseq}
+P.~J. Mcmurdie and S~Holmes.
+\newblock phyloseq: {A}n {R} package for reproducible interactive analysis and
+  graphics of microbiome census data.
+\newblock {\em Plos One}, 8(4):e61217, 2013.
+
+\bibitem{Asnicar2015Compact}
+Francesco Asnicar, George Weingart, Timothy~L. Tickle, Curtis Huttenhower, and
+  Nicola Segata.
+\newblock Compact graphical representation of phylogenetic data and metadata
+  with {GraPhlAn}.
+\newblock 3(11):e1029, 2015.
+
+\bibitem{Paulson2013Differential}
+Joseph~N Paulson, O~Colin Stine, Héctor~Corrada Bravo, and Mihai Pop.
+\newblock Differential abundance analysis for microbial marker-gene surveys.
+\newblock {\em Nature Methods}, 10(12):1200, 2013.
+
+\bibitem{Langille2013Predictive}
+Morgan G~I Langille, Jesse Zaneveld, J~Gregory Caporaso, Daniel Mcdonald,
+  Knights Dan, Joshua~A Reyes, Jose~C Clemente, Deron~E Burkepile, Rebecca
+  L~Vega Thurber, and Rob Knight.
+\newblock Predictive functional profiling of microbial communities using 16s
+  {rRNA} marker gene sequences.
+\newblock {\em Nature Biotechnology}, 31(9):814, 2013.
+
+\bibitem{Kanehisa2008KEGG}
+M~Kanehisa, M~Araki, S~Goto, M~Hattori, M~Hirakawa, M~Itoh, T~Katayama,
+  S~Kawashima, S~Okuda, and T~Tokimatsu.
+\newblock {KEGG} for linking genomes to life and the environment.
+\newblock {\em Nucleic Acids Research}, 36(Database issue):D480--D484, 2008.
+
+
+%\bibitem{indicspecies}
+%MD Caceres ， F Jansen
+%\newblock indicspecies: Functions to 
+%assess the strength and significance of relationship of species site group associations
+%\newblock {\em Laryngoscope} ,  37 (12) ,2012
+\end{thebibliography}
